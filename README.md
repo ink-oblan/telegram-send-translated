@@ -1,4 +1,6 @@
-# Telegram LLM Translation Bot
+# Telegram LLM Translation Bot(@SendTranslatedBot)
+
+You can try it here: [@SendTranslatedBot](https://t.me/SendTranslatedBot)
 
 A Telegram **inline** bot that translates text with an LLM (Anthropic Claude).
 While chatting with anyone — including a private chat with another person —
