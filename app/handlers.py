@@ -114,12 +114,17 @@ async def inline_translate(
     raw = inline_query.query
 
     if not raw.strip():
+        saved = await storage.get_target_lang(user_id)
+        if saved:
+            button_text = f"Default: {saved} — tap to change"
+        else:
+            button_text = "Set your default language"
         await inline_query.answer(
             results=[],
             cache_time=0,
             is_personal=True,
             button=InlineQueryResultsButton(
-                text="Set your default language",
+                text=button_text,
                 start_parameter="setlang",
             ),
         )
