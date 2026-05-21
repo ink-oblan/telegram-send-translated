@@ -9,8 +9,8 @@ from aiogram.enums import ParseMode
 
 from . import handlers
 from .config import load_config
+from .providers import build_registry
 from .storage import Storage
-from .translator import Translator
 
 
 async def main() -> None:
@@ -22,7 +22,7 @@ async def main() -> None:
 
     storage = Storage(config.db_path)
     await storage.connect()
-    translator = Translator(config.anthropic_api_key, config.anthropic_model)
+    registry = build_registry(config)
 
     bot = Bot(
         token=config.bot_token,
@@ -35,12 +35,12 @@ async def main() -> None:
         await bot.delete_webhook(drop_pending_updates=True)
         await dispatcher.start_polling(
             bot,
-            translator=translator,
+            registry=registry,
             storage=storage,
             config=config,
         )
     finally:
-        await translator.aclose()
+        await registry.aclose()
         await storage.close()
         await bot.session.close()
 
