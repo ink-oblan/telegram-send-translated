@@ -42,6 +42,11 @@ async def main() -> None:
     ])
 
     if config.webhook_url:
+        # Inject shared deps into workflow_data so handlers receive them as kwargs.
+        dispatcher["registry"] = registry
+        dispatcher["storage"] = storage
+        dispatcher["config"] = config
+
         await bot.set_webhook(
             url=config.webhook_url,
             secret_token=config.webhook_secret,
@@ -49,7 +54,7 @@ async def main() -> None:
         )
         app = web.Application()
         SimpleRequestHandler(dispatcher=dispatcher, bot=bot).register(app, path=config.webhook_path)
-        setup_application(app, dispatcher, registry=registry, storage=storage, config=config)
+        setup_application(app, dispatcher)
         runner = web.AppRunner(app)
         await runner.setup()
         await web.TCPSite(runner, "0.0.0.0", config.webhook_port).start()
